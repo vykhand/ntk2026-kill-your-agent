@@ -7,12 +7,16 @@ app = marimo.App(width="full", app_title="Wait for a human")
 @app.cell(hide_code=True)
 def _():
     import inspect
+    import subprocess
 
     import marimo as mo
 
     from lipica import fixtures_io
-    from lipica.hosts import zig_api
+    from lipica.hosts import durable, zig_api
+    from lipica.hosts.durable import TERMINAL, instance_id
+    from lipica.pravilnik import ROOT
     from lipica.stage import cakanje, checks, dag, process, scheduler, terminal
+    from lipica.stage.dashboard import dashboard_iframe, emulator_deep_link, preveri_iframe
     from lipica.workflow import CakanjeNaZig, build_workflow
 
     WORKFLOW = build_workflow(idempotent=True, hitl=True)  # the graph shape never depends on hitl/idempotent
@@ -21,19 +25,27 @@ def _():
     client, raw = scheduler.client_pair("nb-04")  # one pair, reused by every live cell below
     return (
         CakanjeNaZig,
+        ROOT,
         TELEFON,
+        TERMINAL,
         WORKER,
         WORKFLOW,
         cakanje,
         checks,
         client,
         dag,
+        dashboard_iframe,
+        durable,
+        emulator_deep_link,
         fixtures_io,
         inspect,
+        instance_id,
         mo,
+        preveri_iframe,
         process,
         raw,
         scheduler,
+        subprocess,
         terminal,
         zig_api,
     )
@@ -141,38 +153,87 @@ def _(dvojna, fixtures_io):
 def _(mo):
     zacni_delavca = mo.ui.run_button(label="▶ Start worker", kind="success")
     ubij = mo.ui.run_button(label="kill -9", kind="danger")
+    ponastavi = mo.ui.run_button(label="Reset  (scripts/reset.py)", kind="warn")
     zacni_telefon = mo.ui.run_button(label="📱 Start phone page", kind="success")
-    mo.hstack([zacni_delavca, ubij, zacni_telefon], justify="start", gap=1)
-    return ubij, zacni_delavca, zacni_telefon
+    mo.hstack([zacni_delavca, ubij, ponastavi, zacni_telefon], justify="start", gap=1)
+    return ponastavi, ubij, zacni_delavca, zacni_telefon
 
 
 @app.cell(hide_code=True)
-def _(dvojna, mo, process, set_delavec, zacni_delavca):
+def _(
+    TERMINAL,
+    client,
+    dvojna,
+    get_delavec,
+    instance_id,
+    mo,
+    process,
+    set_delavec,
+    vloga_v_pregledu,
+    zacni_delavca,
+):
     mo.stop(not zacni_delavca.value)
     ukaz = "act3-dvojna" if dvojna.value else "act3"
-    set_delavec(process.start("act3", process.uv_run(ukaz)))
-    mo.md(f"started `uv run {ukaz}`")
+    _prej = get_delavec()
+    try:
+        _status = client.get_runtime_status(instance_id(vloga_v_pregledu))
+    except Exception:  # emulator down: let the worker say so in its own log
+        _status = None
+    if _prej is not None and _prej.alive():
+        _out = mo.md(f"worker already running · pid `{_prej.pid}`")
+    elif _status in TERMINAL:
+        # The host would only print "opravljeno" and exit — say it here instead of looking like nothing happened.
+        _out = mo.md(
+            f"`{vloga_v_pregledu}` is already **{_status}** in the scheduler — nothing left to run. "
+            "Press **Reset**, then **Start worker**."
+        )
+    else:
+        _d = process.start("act3", process.uv_run(ukaz))
+        set_delavec(_d)
+        _kaj = "resumes the parked application — nothing is replayed" if _status else "a new application"
+        _out = mo.md(f"started `uv run {ukaz}` · pid `{_d.pid}` · `{vloga_v_pregledu}`: {_kaj}")
+    _out
     return
 
 
 @app.cell(hide_code=True)
-def _(get_delavec, mo, ubij):
+def _(get_delavec, mo, set_delavec, ubij):
     mo.stop(not ubij.value)
     _d = get_delavec()
     if _d is None:
         mo.output.replace(mo.md("no worker to kill"))
     else:
         _umrl = _d.kill9()
-        mo.output.replace(mo.md(f"`kill -9 {_d.pid}` · confirmed dead: {'yes' if _umrl else 'no'}"))
+        set_delavec(_d)
+        mo.output.replace(
+            mo.md(
+                f"`kill -9 {_d.pid}` · confirmed dead: {'yes' if _umrl else 'no'} — the application stays parked "
+                "in the scheduler (table and dashboard below). **Start worker** picks it up again."
+            )
+        )
     return
 
 
 @app.cell(hide_code=True)
-def _(TELEFON, get_telefon, mo, process, set_telefon, zacni_telefon):
+def _(ROOT, get_delavec, mo, ponastavi, set_delavec, subprocess):
+    mo.stop(not ponastavi.value)
+    _d = get_delavec()
+    if _d is not None and _d.alive():
+        _d.kill9()  # a live worker would keep the emulator's instance busy while it is purged
+    _r = subprocess.run(["uv", "run", "python", "scripts/reset.py"], cwd=str(ROOT), capture_output=True, text=True)
+    set_delavec(None)
+    mo.md(f"```\n{(_r.stdout + _r.stderr).strip()}\n```")
+    return
+
+
+@app.cell(hide_code=True)
+def _(TELEFON, cakanje, get_telefon, mo, process, set_telefon, zacni_telefon):
     mo.stop(not zacni_telefon.value)
     prejsnji = get_telefon()
     if prejsnji is not None and prejsnji.alive():
         mo.output.replace(mo.md(f"phone page already running · pid {prejsnji.pid}"))
+    elif cakanje.telefon_tece():
+        mo.output.replace(mo.md("phone page already running on :8000 (started elsewhere) — using that one"))
     else:
         set_telefon(process.start(TELEFON, process.uv_run("zig")))
         mo.output.replace(mo.md("phone page starting …"))
@@ -180,9 +241,10 @@ def _(TELEFON, get_telefon, mo, process, set_telefon, zacni_telefon):
 
 
 @app.cell(hide_code=True)
-def _(cakanje, get_telefon, mo, zig_api):
+def _(cakanje, get_telefon, mo, zacni_telefon, zig_api):
+    _ = zacni_telefon  # re-check on every press, also when the page was already running elsewhere
     telefon = get_telefon()
-    if telefon is None or not telefon.alive():
+    if (telefon is None or not telefon.alive()) and not cakanje.telefon_tece():
         mo.output.replace(mo.md("_phone page not running — press **Start phone page**._"))
     else:
         url = f"http://{zig_api.lan_ip()}:8000"
@@ -312,6 +374,38 @@ def _(cakanje, client, izbira, mo, zahteve, zavrni, zavrni_priloga, zig_api):
             _dopolnitev = [zavrni_priloga.value.strip()] if zavrni_priloga.value.strip() else []
             zig_api.odgovori(client, _z, odobreno=False, odobril="notebook", dopolnitev=_dopolnitev)
             mo.output.replace(mo.md(f"❌ rejected {_z.instance_id} — it loops back through `PreveriPriloge`."))
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ## The scheduler's own view
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(
+    dashboard_iframe,
+    durable,
+    emulator_deep_link,
+    mo,
+    preveri_iframe,
+    vloga_v_pregledu,
+):
+    # Not tied to the 1 s refresh: re-rendering would reload the iframe every tick. The dashboard refreshes itself.
+    _url = emulator_deep_link(durable.dashboard(), vloga_v_pregledu)
+    _okvir = preveri_iframe(durable.dashboard())
+    _uvod = (
+        f"The local DTS dashboard, deep-linked to `{vloga_v_pregledu}` — [open in a new tab]({_url}). "
+        "Kill the worker while it waits: here it stays **Running**, with nothing in flight."
+    )
+    if _okvir.lahko:
+        _out = mo.vstack([mo.md(_uvod), mo.Html(dashboard_iframe(_url))])
+    else:
+        _out = mo.md(f"{_uvod}  \n*(not embedded: {_okvir.razlog})*")
+    _out
     return
 
 

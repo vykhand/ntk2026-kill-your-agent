@@ -36,6 +36,7 @@ from lipica.pravilnik import ROOT
 
 # Your Foundry project, e.g. https://<account>.services.ai.azure.com/api/projects/<project> (see .env.example)
 ENDPOINT = os.environ.get("FOUNDRY_PROJECT_ENDPOINT", "")
+SUBSCRIPTION = os.environ.get("AZURE_SUBSCRIPTION_ID", "")  # optional: pins which az login answers for the project
 STORE = os.environ.get("MEMORY_STORE_NAME", "ue-lipica-spomin")
 CHAT_MODEL = os.environ.get("FOUNDRY_MODEL", "gpt-5.4-mini")
 EMBEDDING_MODEL = os.environ.get("FOUNDRY_EMBEDDING_MODEL", "text-embedding-3-large")
@@ -96,10 +97,11 @@ KONTEKST_STRANKA = "## Zapisi o stranki\nIz prejšnjih obiskov te stranke:"
 
 @asynccontextmanager
 async def klient() -> AsyncIterator[tuple[AIProjectClient, "Spomin"]]:
-    """The project client for an existing Foundry project; `az login` identity, Foundry User on the account."""
+    """The project client for an existing Foundry project; `az login` identity, Foundry User on the account.
+    With AZURE_SUBSCRIPTION_ID set it is pinned to that subscription, so it works whichever az login is the default."""
     if not ENDPOINT:
         raise SystemExit("FOUNDRY_PROJECT_ENDPOINT is not set (see .env.example)")
-    async with AzureCliCredential() as cred, AIProjectClient(endpoint=ENDPOINT, credential=cred) as pc:
+    async with AzureCliCredential(subscription=SUBSCRIPTION or None) as cred, AIProjectClient(endpoint=ENDPOINT, credential=cred) as pc:
         yield pc, Spomin(pc)
 
 

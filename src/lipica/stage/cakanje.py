@@ -8,10 +8,22 @@ module only adds the bits specific to this beat.
 from __future__ import annotations
 
 import io
+import socket
 
 import qrcode
 
 from lipica.hosts.zig_api import Zahteva
+
+
+def telefon_tece(port: int = 8000, timeout: float = 0.5) -> bool:
+    """True if something already answers on the phone page's port — this notebook's own `uv run zig`, one
+    from an earlier kernel, or `make zig` in a terminal. A second `uv run zig` would only die with
+    "address already in use", so the notebook reuses the running one instead."""
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=timeout):
+            return True
+    except OSError:
+        return False
 
 
 def qr_png(url: str) -> bytes:

@@ -2,7 +2,7 @@
 
 Reuses `lipica.hosts.durable` for the client/raw pair, exactly like `uv run act2`/`act3` do, so a
 notebook's table shows the same reality the terminal fallback would. Honours
-`DTS_ENDPOINT`/`DTS_TASKHUB`/`DTS_TENANT` (see `scripts/act5_env.sh`), so notebook 06 points the same
+`DTS_ENDPOINT`/`DTS_TASKHUB`/`DTS_SUBSCRIPTION`/`DTS_TENANT` (see `scripts/act5_env.sh`), so notebook 06 points the same
 functions at the Azure scheduler just by setting those first. Pending stamp requests are read the
 same way `lipica.hosts.zig_api.cakajoce` reads them (the phone's own API) — this module adds the
 per-application table and the live-DAG glue on top.

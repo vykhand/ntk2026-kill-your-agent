@@ -53,3 +53,14 @@ def test_najdi_returns_the_matching_request():
 
 def test_najdi_is_none_once_the_request_is_gone():
     assert cakanje.najdi([_zahteva("r1")], "answered-elsewhere") is None
+
+
+def test_telefon_tece_sees_a_listening_port_and_not_a_closed_one():
+    import socket
+
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        s.listen()
+        port = s.getsockname()[1]
+        assert cakanje.telefon_tece(port)
+    assert not cakanje.telefon_tece(port)  # closed now: nothing answers

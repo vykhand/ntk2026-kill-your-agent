@@ -69,10 +69,15 @@ def dts_kwargs(role: str = "worker") -> dict:
     if v_oblaku():
         from azure.identity import AzureCliCredential
 
-        # Pin the tenant. The az CLI holds several logins here and its default drifts between them,
-        # so an unpinned credential can hand back a token for the wrong directory mid-demo.
-        tenant = os.environ.get("DTS_TENANT")
-        credential = AzureCliCredential(tenant_id=tenant) if tenant else AzureCliCredential()
+        # Pin the subscription. The az CLI can hold several logins, and its default may belong to another
+        # directory: a tenant pin alone still asks as the *default* account, which then fails with AADSTS50020;
+        # the subscription picks the right login. az refuses --tenant together with --subscription, so the
+        # tenant is only the fallback.
+        if subscription := os.environ.get("DTS_SUBSCRIPTION"):
+            credential = AzureCliCredential(subscription=subscription)
+        else:
+            tenant = os.environ.get("DTS_TENANT")
+            credential = AzureCliCredential(tenant_id=tenant) if tenant else AzureCliCredential()
     return dict(
         host_address=endpoint(),
         taskhub=os.environ.get("DTS_TASKHUB", "default"),

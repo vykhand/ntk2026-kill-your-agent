@@ -20,4 +20,7 @@ for k in DTS_TASKHUB DTS_TENANT DTS_DASHBOARD; do
   v=$(printf '%s\n' "$VALUES" | sed -n "s/^$k=\"\(.*\)\"$/\1/p")
   [ -n "$v" ] && printf 'export %s=%s\n' "$k" "$v"
 done
+# The subscription picks which az login answers (hosts/durable.py); the tenant alone does not.
+v=$(printf '%s\n' "$VALUES" | sed -n 's/^AZURE_SUBSCRIPTION_ID="\(.*\)"$/\1/p')
+[ -n "$v" ] && printf 'export DTS_SUBSCRIPTION=%s\n' "$v"
 exit 0
