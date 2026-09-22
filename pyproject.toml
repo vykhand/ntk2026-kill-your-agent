@@ -1,0 +1,67 @@
+[project]
+name = "lipica"
+version = "0.1.0"
+description = "kill -9 za AI agente: NTK 2026 demo (Upravna enota Zgornja Lipica)"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # Microsoft Agent Framework: exact pins, verified against PyPI on 2026-09-05
+    "agent-framework-core==1.17.0",
+    "agent-framework-openai==1.14.2",
+    "agent-framework-durabletask==1.0.0b260730",
+    "agent-framework-ollama==1.0.0b260813",
+    "durabletask==1.10.1",
+    "durabletask-azuremanaged==1.10.1",
+    # demo plumbing
+    "pydantic>=2.11",
+    "python-dotenv>=1.1",
+    "rich>=14.0",
+    "reportlab>=4.4",
+    # Act 3 phone page
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "python-multipart>=0.0.9",
+    # the ollama SDK pinned by agent-framework-ollama (0.5.3) breaks on httpx 1.x pre-releases
+    "httpx<1",
+    # Act 4: Foundry Agent Service memory (pins azure-ai-projects <2.4.0)
+    "agent-framework-foundry==1.12.0",
+    "marimo==0.24.2",
+    "agent-framework-devui==1.0.0b260910",
+    # notebook 04 shows the phone URL as a QR code
+    "qrcode[pil]>=8.2",
+]
+
+[project.scripts]
+act1 = "lipica.hosts.inprocess:main"
+act2 = "lipica.hosts.durable:main"
+act3 = "lipica.hosts.durable:main_act3"
+act3-dvojna = "lipica.hosts.durable:main_act3_dvojna"
+zig = "lipica.hosts.telefon:main"
+act4 = "lipica.hosts.act4:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "pytest-asyncio>=1.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lipica"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.marimo.runtime]
+# Open = render. Every side effect sits behind a run_button, so running the cells on open is safe, and
+# without it a notebook opens showing stale cached output with nothing executed (the user-level default here is off).
+auto_instantiate = true
+
+[tool.marimo.display]
+# The room reads the notebooks off a projector: light theme, full width.
+theme = "light"
+default_width = "full"

@@ -1,0 +1,7 @@
+# Act 5 infrastructure: a Durable Task Scheduler and one task hub. Nothing else.
+# The worker stays on the laptop (that is the point), so there is no service to deploy:
+#   azd provision   creates the scheduler
+#   azd down        removes it
+name: lipica-act5
+metadata:
+  template: lipica-act5@0.2.0

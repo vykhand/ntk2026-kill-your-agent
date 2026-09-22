@@ -1,0 +1,15 @@
+# Durable Task Scheduler emulator for Acts 2-3. State lives in the container's memory only:
+# `docker compose restart` is a full reset of all orchestration instances (handy between rehearsals).
+# The demo kills the WORKER process, never this container.
+services:
+  dts-emulator:
+    # Pinned to the digest that :latest resolved to on 2026-09-05 (multi-arch index, arm64 native).
+    # To move forward: docker pull mcr.microsoft.com/dts/dts-emulator:latest, then update the digest.
+    image: mcr.microsoft.com/dts/dts-emulator:latest@sha256:361323065a608d605f9d3ae56b854eb11f1c47fcc16845a37f948f03ca9c5fac
+    container_name: lipica-dts-emulator
+    ports:
+      - "8080:8080"   # gRPC endpoint for workers and clients
+      - "8082:8082"   # dashboard: http://localhost:8082
+    environment:
+      DTS_TASK_HUB_NAMES: "default"
+    restart: unless-stopped

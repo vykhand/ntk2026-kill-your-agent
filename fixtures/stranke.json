@@ -1,0 +1,54 @@
+{
+  "_opozorilo": "Vsi podatki so izmišljeni. Identifikatorji so namerno v obliki ID-TEST-xxx in OI-TEST-xxxx in NISO podobni nobenemu resničnemu formatu osebnih številk.",
+  "stranke": [
+    {
+      "id": "ID-TEST-001",
+      "ime": "Anica Lipovšek",
+      "naslov": "Lipova ulica 7, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0001", "datum_izdaje": "2021-04-12" },
+      "opomba": "Akt 1 in 2: popolna vloga, dokument star 5 let."
+    },
+    {
+      "id": "ID-TEST-002",
+      "ime": "Bojan Krivec",
+      "naslov": "Pod hribom 3, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0002", "datum_izdaje": "2019-08-30" },
+      "opomba": "Akt 3: registracija psa Pikija, manjka potrdilo o čipu."
+    },
+    {
+      "id": "ID-TEST-003",
+      "ime": "Cvetka Mlinar",
+      "naslov": "Čebelarska pot 12, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0003", "datum_izdaje": "2022-02-01" },
+      "opomba": "Akt 3 (razširitev): čebelnjak, dvojna odobritev."
+    },
+    {
+      "id": "ID-TEST-004",
+      "ime": "Dušan Podgoršek",
+      "naslov": "Ob potoku 21, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0004", "datum_izdaje": "2020-06-05" },
+      "opomba": "Akt 4 (A, učenje): dokument star 6 let."
+    },
+    {
+      "id": "ID-TEST-005",
+      "ime": "Ema Zajc",
+      "naslov": "Kamnita ulica 4, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0005", "datum_izdaje": "2014-03-15" },
+      "opomba": "Akt 4 (B): dokument star 12 let -> naučeno pravilo zahteva novo fotografijo, pravilnik sam je ne."
+    },
+    {
+      "id": "ID-TEST-006",
+      "ime": "Filip Rozman",
+      "naslov": "Sončna ulica 9, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0006", "datum_izdaje": "2015-06-02" },
+      "opomba": "Akt 4 (C, po izbrisu pravila): dokument star 11 let, brez pravila gre skozi brez fotografije."
+    },
+    {
+      "id": "ID-TEST-007",
+      "ime": "Greta Volk",
+      "naslov": "Stara cesta 1, 9999 Zgornja Lipica",
+      "dokument": { "vrsta": "osebna izkaznica", "številka": "OI-TEST-0007", "datum_izdaje": "2009-06-30" },
+      "opomba": "Testna stranka: dokument star 17 let sproži že osnovno pravilo (15 let) iz pravilnika."
+    }
+  ]
+}

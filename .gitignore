@@ -1,0 +1,37 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Secrets / env
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Demo runtime state
+.run/
+out/
+
+# keep the template
+!.env.example
+
+# Act 5: the azd environment holds the provisioned endpoint and the subscription id
+act5/.azure/
+
+# marimo's own per-notebook session cache (reconnect state) — regenerated on every `marimo edit`,
+# and stale entries make a restarted server silently replay an old, half-run session instead of
+# re-executing on open.
+notebooks/__marimo__/

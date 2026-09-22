@@ -1,0 +1,78 @@
+{
+  "_opozorilo": "Izmišljene vloge za demonstracijo. Šifre postopkov se sklicujejo na fixtures/pravilnik.md, stranke na fixtures/stranke.json.",
+  "_datum_obravnave": "2026-09-21",
+  "vloge": [
+    {
+      "id": "VL-2026-0047",
+      "akt": "1, 2",
+      "stranka_id": "ID-TEST-001",
+      "postopek": "UE-01",
+      "naziv": "Podaljšanje osebne izkaznice",
+      "priloge": ["prejšnja osebna izkaznica", "potrdilo o plačilu takse"],
+      "opomba_stranke": "Izkaznica mi poteče naslednji mesec."
+    },
+    {
+      "id": "VL-2026-0048",
+      "akt": "3 (zavrnitev -> dopolnitev)",
+      "stranka_id": "ID-TEST-002",
+      "postopek": "UE-02",
+      "naziv": "Registracija psa",
+      "priloge": ["potrdilo o cepljenju proti steklini", "dokazilo o lastništvu (izjava rejca)"],
+      "opomba_stranke": "Pes Piki, mešanec, 2 leti. Čip ima, potrdila nisem našel."
+    },
+    {
+      "id": "VL-2026-0049",
+      "akt": "3 (razširitev: dvojna odobritev)",
+      "stranka_id": "ID-TEST-003",
+      "postopek": "UE-03",
+      "naziv": "Dovoljenje za postavitev čebelnjaka",
+      "priloge": ["skica lokacije z razdaljami do sosednjih parcel", "pisno soglasje lastnikov sosednjih parcel (3 podpisi)", "potrdilo o vpisu v register čebelarjev"],
+      "opomba_stranke": "Šest panjev, ob gozdnem robu."
+    },
+    {
+      "id": "VL-2026-0051",
+      "akt": "4 (A, učenje)",
+      "stranka_id": "ID-TEST-004",
+      "postopek": "UE-01",
+      "naziv": "Podaljšanje osebne izkaznice",
+      "priloge": ["prejšnja osebna izkaznica", "potrdilo o plačilu takse"],
+      "opomba_stranke": ""
+    },
+    {
+      "id": "VL-2026-0052",
+      "akt": "4 (B, uporaba naučenega)",
+      "stranka_id": "ID-TEST-005",
+      "postopek": "UE-01",
+      "naziv": "Podaljšanje osebne izkaznice",
+      "priloge": ["prejšnja osebna izkaznica", "potrdilo o plačilu takse"],
+      "opomba_stranke": "Izkaznica je še kar cela, samo rob je malo zavihan."
+    },
+    {
+      "id": "VL-2026-0053",
+      "akt": "4 (C, po izbrisu pravila)",
+      "stranka_id": "ID-TEST-006",
+      "postopek": "UE-01",
+      "naziv": "Podaljšanje osebne izkaznice",
+      "priloge": ["prejšnja osebna izkaznica", "potrdilo o plačilu takse"],
+      "opomba_stranke": ""
+    },
+    {
+      "id": "VL-2026-0054",
+      "akt": "test (osnovno pravilo 15 let)",
+      "stranka_id": "ID-TEST-007",
+      "postopek": "UE-01",
+      "naziv": "Podaljšanje osebne izkaznice",
+      "priloge": ["prejšnja osebna izkaznica", "potrdilo o plačilu takse"],
+      "opomba_stranke": "Fotografije nisem prinesla, saj sem še vedno ista."
+    },
+    {
+      "id": "VL-2026-0050",
+      "akt": "1, 2 (druga v jutranji vrsti; tu pade kill)",
+      "stranka_id": "ID-TEST-002",
+      "postopek": "UE-04",
+      "naziv": "Prijava kurjenja na prostem",
+      "priloge": ["opis lokacije kurišča", "izjava o razpoložljivem gasilnem sredstvu"],
+      "opomba_stranke": "Obrezano vejevje, sobota dopoldne."
+    }
+  ]
+}
