@@ -174,6 +174,56 @@ scripts/                   kill_during.py, reset.py, zig.py, devui.py, smoke_llm
 
 Everything on screen is fictional: the municipality, the procedures, the people, and the id formats.
 
+## Useful links
+
+Every link from the talk's slides and speaker notes.
+
+**Microsoft Agent Framework**
+- [Overview](https://learn.microsoft.com/en-us/agent-framework/overview/)
+- [GitHub](https://github.com/microsoft/agent-framework)
+- [agent-framework-core on PyPI](https://pypi.org/project/agent-framework-core/)
+- [Workflows](https://learn.microsoft.com/en-us/agent-framework/workflows/)
+- [Executors](https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/executors)
+- [Edges](https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/edges)
+- [Checkpoints and resuming](https://learn.microsoft.com/en-us/agent-framework/workflows/checkpoints)
+- [Human-in-the-loop](https://learn.microsoft.com/en-us/agent-framework/workflows/human-in-the-loop) (`ctx.request_info`, `@response_handler`)
+
+**Seeing the graph: WorkflowViz and DevUI**
+- [WorkflowViz](https://learn.microsoft.com/en-us/agent-framework/workflows/visualization): the graph generator (`to_mermaid` / `to_digraph` / `export`)
+- [WorkflowViz API reference](https://learn.microsoft.com/en-us/python/api/agent-framework-core/agent_framework.workflowviz?view=agent-framework-python-latest)
+- [WorkflowViz source](https://github.com/microsoft/agent-framework/blob/main/python/packages/core/agent_framework/_workflows/_viz.py)
+- [WorkflowViz sample](https://github.com/microsoft/agent-framework/blob/main/python/samples/03-workflows/visualization/concurrent_with_visualization.py)
+- [DevUI](https://learn.microsoft.com/en-us/agent-framework/integrations/by-component/ui/devui/)
+- [DevUI README](https://github.com/microsoft/agent-framework/blob/main/python/packages/devui/README.md) (`serve(entities=[...])`)
+- [DevUI samples](https://github.com/microsoft/agent-framework/tree/main/python/samples/02-agents/devui)
+- [agent-framework-devui on PyPI](https://pypi.org/project/agent-framework-devui/)
+
+**Durability: the Durable extension and the Durable Task Scheduler**
+- [Durable extension](https://learn.microsoft.com/en-us/agent-framework/integrations/durable-extension)
+- [Durable extension on GitHub](https://github.com/microsoft/agent-framework-durable-extension/tree/main/python) (Python)
+- [agent-framework-durabletask on PyPI](https://pypi.org/project/agent-framework-durabletask/)
+- [Durable Task docs](https://learn.microsoft.com/en-us/azure/durable-task/)
+- [Durable Task Scheduler](https://learn.microsoft.com/en-us/azure/durable-task/scheduler/durable-task-scheduler)
+- [Emulator, dashboard, creating a scheduler and task hub](https://learn.microsoft.com/en-us/azure/durable-task/scheduler/develop-with-durable-task-scheduler)
+- [Scheduler billing](https://learn.microsoft.com/en-us/azure/durable-task/scheduler/durable-task-scheduler-billing) (Consumption vs Dedicated)
+- [Durable Task SDK for Python](https://github.com/microsoft/durabletask-python)
+- [Orchestrator code constraints](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-code-constraints) (determinism, replay)
+
+**Memory**
+- [Foundry Agent Service memory](https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-memory) (preview)
+- [Create and use memory](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/memory-usage)
+
+**The notebooks and the local model**
+- [marimo docs](https://docs.marimo.io/)
+- [`mo.ui.run_button`](https://docs.marimo.io/api/inputs/run_button/): every side effect in the notebooks sits behind one
+- [`mo.ui.refresh`](https://docs.marimo.io/api/inputs/refresh/): drives the live tables and graph
+- [`mo.mermaid`](https://docs.marimo.io/examples/markdown/mermaid/): draws the WorkflowViz output
+- [gpt-oss on Ollama](https://ollama.com/library/gpt-oss): the local model
+
+**Other durable workflow engines**
+- [Temporal](https://docs.temporal.io/)
+- [Dapr Workflow](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/)
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
